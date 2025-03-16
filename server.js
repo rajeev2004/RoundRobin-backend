@@ -8,7 +8,7 @@ const app=express();
 app.set("trust proxy",true);
 app.use(express.json());
 app.use(cors({
-  origin:['http://localhost:5173','https://rajeev2004.github.io/RoundRobin-frontend/'],
+  origin:['http://localhost:5173','https://rajeev2004.github.io/RoundRobin-frontend'],
   credentials: true,
 }));
 app.use(cookieParser());
