@@ -18,7 +18,7 @@ export async function adminLogin(req,res){
             throw new Error('Incorrect admin key');
         }
         const token=jwt.sign({id:response.rows[0].id},process.env.SECRET_KEY,{expiresIn:'24h'});
-        res.cookie("adminCookie",token,{httpOnly:true,secure:true,sameSite:"None",maxAge:24*60*60*1000});
+        res.cookie("adminCookie",token,{httpOnly:true,secure:true,sameSite:"None",partitioned:true,maxAge:24*60*60*1000});
         return res.status(200).json({login:true});
     }catch(err){
         res.status(500).json({error:err.message});
@@ -38,7 +38,7 @@ export async function adminSignUp(req,res){
         }
         const adminSignUp=await db.query('insert into admins (email,password) values($1,$2) RETURNING *',[email,hashedPass]);
         const token=jwt.sign({id:adminSignUp.rows[0].id},process.env.SECRET_KEY,{expiresIn:'24h'});
-        res.cookie("adminCookie",token,{httpOnly:true,secure:true,sameSite:"None",maxAge:24*60*60*1000});
+        res.cookie("adminCookie",token,{httpOnly:true,secure:true,sameSite:"None",partitioned:true,maxAge:24*60*60*1000});
         return res.status(200).json({signUp:true});
     }catch(err){
         res.status(500).json({error:err.message});
@@ -61,7 +61,7 @@ export async function claimCoupon(req,res){
     const {id}=req.params;
     const ip=req.headers["x-forwarded-for"]?.split(",")[0]||req.connection.remoteAddress||req.ip;
     const browserSession=req.cookies.session || uuidv4();
-    res.cookie('session',browserSession,{httpOnly:true,secure:true,sameSite:"None"});
+    res.cookie('session',browserSession,{httpOnly:true,secure:true,sameSite:"None",partitioned:true});
     try{
         const isClaimed=await db.query('select claimed from coupons where id=$1',[id]);
         if(isClaimed.rows[0].claimed){
@@ -103,7 +103,7 @@ export async function updateCoupon(req,res){
     }
 }
 export async function logout(req,res){
-    res.clearCookie("adminCookie",{httpOnly:true,secure:true,sameSite:"None"});
+    res.clearCookie("adminCookie",{httpOnly:true,secure:true,sameSite:"None",partitioned:true});
     res.status(200).json({message:'logout successful'})
 }
 export async function addCoupon(req,res){
