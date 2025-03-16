@@ -94,6 +94,9 @@ export async function updateCoupon(req,res){
         if(updateCouponResponse.rows.length===0){
             throw new Error('coupon not found');
         }
+        if(!claimed){
+            await db.query('delete from claims where coupon_id=$1',[id]);
+        }
         return res.status(200).json({message:'coupon updates successfully',coupon:updateCouponResponse.rows[0]})
     }catch(err){
         res.status(500).json({error:err.message});
