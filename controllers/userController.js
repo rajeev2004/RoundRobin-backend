@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import db from "../config/db.js";
 import {v4 as uuidv4} from "uuid";
 export async function adminLogin(req,res){
-    const ADMIN_KEY=process.env.Admin_Key;
+    const ADMIN_KEY=process.env.ADMIN_KEY;
     const {email,password,adminKey}=req.body;
     try{
         const response=await db.query('select * from admins where email=$1',[email]);
@@ -25,7 +25,7 @@ export async function adminLogin(req,res){
     }
 }
 export async function adminSignUp(req,res){
-    const ADMIN_KEY=process.env.Admin_Key;
+    const ADMIN_KEY=process.env.ADMIN_KEY;
     const {email,password,adminKey}=req.body;
     try{
         const response=await db.query('select * from admins where email=$1',[email]);
